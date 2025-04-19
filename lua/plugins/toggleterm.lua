@@ -52,6 +52,11 @@ return {
         end,
         desc = "ToggleTerm (tab cwd_dir)",
       },
+      {
+        "<c-[>",
+        "<cmd>stopinsert<cr>",
+        mode = "t",
+      },
     },
     opts = {
       -- size can be a number or function which is passed the current terminal
