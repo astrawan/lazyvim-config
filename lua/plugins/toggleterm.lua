@@ -100,6 +100,9 @@ return {
       --     background = "Normal",
       --   }
       -- }
+      on_open = function()
+        vim.api.nvim_set_keymap('t', '<esc>', '<esc>', { nowait = true })
+      end,
     },
   },
 }
