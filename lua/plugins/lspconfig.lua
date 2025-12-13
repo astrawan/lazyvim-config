@@ -1,36 +1,49 @@
-local sysname = string.lower(vim.uv.os_uname().sysname)
-local is_nixos = nil
-
-if sysname == "linux" then
-  local fd_os_release = assert(io.open("/etc/os-release"), "r")
-  local s_os_release = fd_os_release:read("*a")
-  fd_os_release:close()
-  s_os_release = s_os_release:lower()
-  is_nixos = s_os_release:match("nixos")
-end
-
-if is_nixos == nil then
-  print('is not nixos')
-else
-  print('is nixos')
-end
-
 return {
   "neovim/nvim-lspconfig",
   opts = {
     servers = {
-      denols = {
+      biome = {
         enabled = true,
       },
-      texlab = {
-        mason = is_nixos == nil,
+      cssls = {
+        enabled = true,
       },
-      lua_ls = {
-        mason = is_nixos == nil,
+      denols = {
+        enabled = false,
       },
-      marksman = {
-        mason = is_nixos == nil,
+      tailwindcss = {
+        enabled = true,
       },
+      volar = {
+        enabled = true,
+      },
+      vtsls = {
+        enabled = true,
+      },
+    },
+    setup = {
+      tailwindcss = function(_, opts)
+        opts.settings = {
+          tailwindCSS = {
+            includeLanguages = {
+              vue = "vue",
+            },
+          },
+        }
+      end,
+      vtsls = function(_, opts)
+        local vue_langserver_location = os.getenv('VUE_LANGUAGE_SERVER_DIR') or LazyVim.get_pkg_path("vue-language-server", "/node_modules/@vue/language-server")
+        table.insert(opts.filetypes, "vue")
+        LazyVim.extend(opts.settings, "vtsls.tsserver.globalPlugins", {
+          {
+            name = "@vue/typescript-plugin",
+            location = vue_langserver_location,
+            languages = { "vue" },
+            configNamespace = "typescript",
+            enableForWorkspaceTypeScriptVersions = true,
+          },
+        })
+      end,
     },
   },
 }
